@@ -1,4 +1,11 @@
 {
-	"default_language" : "JavaScript",
-	"execution_timeout" : 1
+  "default_language" : "JavaScript",
+  "execution_timeout" : 1,
+
+  /* The directories you would like to include in $PATH environment variable. */
+  "paths": {
+    "osx": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "linux": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "windows": "" /* usually not necessary */
+  }
 }

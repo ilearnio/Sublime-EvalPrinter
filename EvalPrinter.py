@@ -187,9 +187,14 @@ class Helper:
 
 	@staticmethod
 	def executeCommand(cmd, shell=True):
-
 		timeoutLimit = Helper.getSetting("execution_timeout")
-		return KillableCmd(cmd, timeoutLimit, shell).Run()
+
+		env = os.environ.copy()
+		path = Helper.getSetting("paths")[sublime.platform()]
+		if path:
+			env["PATH"] = path
+
+		return KillableCmd(cmd, timeoutLimit, shell, env).Run()
 
 
 	@staticmethod
@@ -246,7 +251,7 @@ class Helper:
 		return  a + "\n" + "-" * 80 + "\n\n" + b
 
 	@staticmethod
-	def getSetting(attr):
+	def getSetting(attr, default=None):
 
 		settings = sublime.load_settings("EvalPrinter.sublime-settings")
-		return settings.get(attr)
+		return settings.get(attr) or default

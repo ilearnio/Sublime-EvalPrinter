@@ -5,14 +5,14 @@ import sublime, sublime_plugin
 from sys import platform as _platform
 
 class KillableCmd(threading.Thread):
-	def __init__(self, cmd, timeout, shell):
+	def __init__(self, cmd, timeout, shell, env):
 
 		threading.Thread.__init__(self)
 
 		self.cmd = cmd
 		self.shell = shell
 		self.timeout = timeout
-
+		self.env = env
 
 	def run(self):
 
@@ -25,22 +25,20 @@ class KillableCmd(threading.Thread):
 		out, err = "", ""
 
 		try:
-			self.p = subprocess.Popen(self.cmd,
+			self.p = subprocess.Popen(
+				self.cmd,
 				startupinfo=startupinfo,
 				stderr=subprocess.PIPE,
 				stdout=subprocess.PIPE,
 				shell=self.shell,
-				env=os.environ.copy())
+				env=self.env)
 
 			out, err = map(lambda x: x.decode("ascii").replace("\r", ""), self.p.communicate())
 
 		except Exception as tryException:
-			if _platform == "darwin":
-				self.returnValue = """Unfortunately, EvalPrinter currently has some issues with OS X.
-Subscribe to the following issue to get notified about the fix: https://github.com/philippotto/Sublime-EvalPrinter/issues/1"""
-				return
-
-			print("An error occured while opening a subprocess", tryException)
+			self.returnValue = "An error occured while opening a subprocess. ".format(tryException)
+			print(self.returnValue)
+			return
 
 		if err or self.p.returncode != 0:
 			self.returnValue = out + err
@@ -55,7 +53,8 @@ Subscribe to the following issue to get notified about the fix: https://github.c
 		self.join(self.timeout)
 
 		if self.is_alive():
-			self.p.terminate()
+			if hasattr(self, "p"):
+				self.p.terminate()
 			self.join()
 			return "The execution took longer than " + str(self.timeout) + " second(s). Aborting..."
 
