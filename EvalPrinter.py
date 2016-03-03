@@ -105,8 +105,7 @@ class EvalEvaluator:
 
 	@staticmethod
 	def runJavaScript(codeStr):
-
-		return Helper.executeCommand(["node", "-p", codeStr], False)
+		return Helper.executeCommand(["node", "--use_strict", "-p", codeStr], False)
 
 
 	@staticmethod
