@@ -59,6 +59,14 @@ class TestMultiEditUtils(TestCase):
 		self.assertCode(codeStr, expectedValue, "JavaScript")
 
 
+	def testUtf8JavaScript(self):
+
+		codeStr = "(function() {\n return 'Привет 世界'\n})()"
+		expectedValue = "Привет 世界"
+
+		self.assertCode(codeStr, expectedValue, "JavaScript")
+
+
 	def testSingleLineCoffeeScript(self):
 
 		codeStr = "do (-> return 2 + 3)"
