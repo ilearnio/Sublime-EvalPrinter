@@ -36,8 +36,7 @@ class KillableCmd(threading.Thread):
 			out, err = map(lambda x: x.decode("ascii").replace("\r", ""), self.p.communicate())
 
 		except Exception as tryException:
-			self.returnValue = "An error occured while opening a subprocess. ".format(tryException)
-			print(self.returnValue)
+			self.returnValue = "An error occured while opening a subprocess.\n{}".format(tryException)
 			return
 
 		if err or self.p.returncode != 0:
